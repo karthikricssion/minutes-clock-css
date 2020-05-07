@@ -3,89 +3,122 @@
     <head>
         <style> 
             body {
-                background-color:#333;
                 overflow: hidden;
             }
-            
-            div {
-                color:white;
-                margin-left:10px;
-                border:2px solid white;
-                padding:10px 10px; 
-                width:50px;
-                border-radius:5px;
-                float:left;
-            }
 
-            .rotate45 {
-                -webkit-transform: rotate(30deg);
-                -webkit-transition: all 0.9s;
-            }
-
-            .rotate60 {
-                -webkit-transform: rotate(60deg);
-                -webkit-transition: all 0.9s;
-            }
-
-            .rotate120 {
-                -webkit-transform: rotate(120deg);
-                -webkit-transition: all 0.9s;
-            }
-
-            div:hover {
-                background-color:red;
+            .circle-wrapper {
+                width: 300px;
+                height: 300px;
+                text-align: center;
+                margin: auto;
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                margin: auto;
             }
 
             #circle{
-                float:right;
-                width: 200px;
-                height: 200px;
+                width: 300px;
+                height: 300px;
                 border-radius: 50%;
-                border:2px solid;
-                text-align:center;
-                color:white;
-                border-left-color: #fff;
-                border-right-color: #059;
-                border-bottom-color: green;
+                border: 4px solid #333;
+                display: block;
+                text-align: center;
+                transition: all ease 0.5s;
+                margin: auto;
             }
+
+            #circle .minute-dot {
+                width: 34px;
+                height: 34px;
+                background-color: #333;
+                display: inline-block;
+                margin: 8px;
+                border-radius: 50%;
+            }
+
+            #minute-counter {
+                position: absolute;
+                font-size: 36px;
+                height: 40px;
+                text-align: center;
+                top: 0;
+                right: 0;
+                left: 0;
+                bottom: 0;
+                margin: auto;
+                animation: zoominout 1s infinite;
+            }
+
+            .circle-wrapper.lite #circle {
+                border-color: #fff;
+            }
+
+            .circle-wrapper.lite #circle .minute-dot {
+                background-color: #fff;
+            }
+
+            .circle-wrapper.lite #minute-counter {
+                color: #fff;
+            }
+
+            @keyframes zoominout {
+                0% {
+                    transform: scale(1,1);
+                }
+                50% {
+                    transform: scale(1.2,1.2);
+                }
+                100% {
+                    transform: scale(1,1);
+                }
+            }
+
+
+
         </style>
     </head>
     <body>
-        <div class='bgchanger' id='home'>Home</div>
-        <div class='bgchanger' id='about'>About</div>
-        <div class='bgchanger' id="works">Works</div>
-        <div class='bgchanger' id='hire'>Hire me</div>
-
-        <span id="circle">10</span>
-
+        <div class="circle-wrapper">
+            <span id="circle">
+                <div class="minute-dot"></div>
+            </span>
+            <div id="minute-counter">0</div>
+        </div>
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+        <script src="./assets/js/tiny.color.js"></script>
         <script>
             $(function(){
-                var changebgcolor = function(colorcode) {
-                    $('body').css({'background-color':colorcode,
-                                'transition': 'all 0.9s',
-                                '-webkit-transition': 'all 0.9s'});
+
+                function frameCounter(count) {
+                    return count
                 }
-            
-                var circlerotate = function(degr) {   
-                    var classList = document.getElementById('circle').className.split(/\s+/);
-                    for (var i = 0; i < classList.length; i++) {
-                        if (classList[i].match("rotate")) {
-                        ('#circle').removeClass(classList[i])
-                        }
-                }
-                $('#circle').addClass('rotate'+degr);
-                }
-            
-                $('.bgchanger').bind('click', function(event){
-                    var id = $(this).attr('id');
-                    switch(id) {
-                            case 'home': changebgcolor('#333');circlerotate('45'); break;
-                            case 'about': changebgcolor('#08c');circlerotate('60'); break;
-                            case 'works': changebgcolor('#ccc');circlerotate('120'); break;           
-                            case 'hire' : changebgcolor('green');circlerotate('60'); break;
-                    }  
-                });
+
+                var count = 0
+                setInterval(() => {
+                    count = count + 1
+                    $('#circle').css({
+                        transform: 'rotate('+ count * 6 +'deg)'
+                    });
+                    $('#minute-counter').text(frameCounter(count))
+
+                    var randomColor = Math.floor(Math.random()*16777215).toString(16);
+
+                    if(tinycolor(randomColor).isDark()) {
+                        $('.circle-wrapper').addClass('lite')
+                    } else {
+                        $('.circle-wrapper').removeClass('lite')
+                    }
+
+                    $("body").css({
+                        "background-color": '#' + randomColor,
+                        'transition': 'all 0.9s',
+                        '-webkit-transition': 'all 0.9s'
+                    });
+                }, 1000)
+
             });
         </script>
 </body>
